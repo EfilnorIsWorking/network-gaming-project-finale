@@ -49,7 +49,7 @@ class Bob:
         self.memorySpace = 2 * round(self.memoryPoint)
         self.memorySpaceLeft = self.memorySpace
         self.visitedTiles: list['Tile'] = []
-        self.foodTilesInMemo: dict('Tile', 'float') = {}
+        self.foodTilesInMemo: dict('Tile', 'float') = {} # type: ignore
 
         # for graphic purposes
         self.PreviousTile : 'Tile' = None
