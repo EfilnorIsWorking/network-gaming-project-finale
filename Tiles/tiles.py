@@ -64,6 +64,9 @@ class Tile:
         self.foodEnergy = 0
     def spawnFood(self):
         self.foodEnergy += self.setting.getFoodEnergy()
+    ### Add 
+    def spawnOtherFood(self, food_energy):
+        self.foodEnergy = food_energy
     def removeBob(self, bob: 'Bob'):
         self.listBob.remove(bob)
 
