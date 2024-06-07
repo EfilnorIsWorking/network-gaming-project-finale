@@ -6,7 +6,6 @@ from view.texture import *
 import random
 from socket import gethostname, gethostbyname #Add
 from math import floor
-from socket import gethostname, gethostbyname
 
 class Bob: 
     id = 0

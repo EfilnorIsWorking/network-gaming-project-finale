@@ -1,11 +1,12 @@
 import pickle
 import sys
+from socket import gethostname, gethostbyname
 
 class Packet:
-    def __init__(self,type,sender,receiver):
+    def __init__(self,type,receiver):
         self.type = type #Type de packet
         self.content = [] #Contenue totale de la data d'un packet
-        self.sender = sender
+        self.sender = gethostbyname(gethostname())
         self.receiver = receiver
         self.serialized_data = []
         self.isFull = False

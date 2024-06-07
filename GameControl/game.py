@@ -93,20 +93,21 @@ class Game:
             self.events()
             self.update()
             # self.draw()
+
+            #Ajout pour le réseau
+            packet = Packet("Update","172.30.148.180")
+            print("Packet: ", packet.content)
+            b1 = Bob()
+            packet.data_add(b1)
+            print("Packet: ", packet.content)
+            packet.serialize()
+            # self.network.send(packet)
+            self.network.send("test")
+            print("Packet Envoyé")
+            self.network.receive()
+            ############################
+
             if self.setting.simuMode:
-
-                #Ajout pour le réseau
-                packet = Packet("Update",self.network.id,"BROADCAST",self.gameController.getNetworkData())
-                print("Packet: ", packet.content)
-                b1 = Bob()
-                packet.data_add(b1)
-                print("Packet: ", packet.content)
-                packet.serialize()
-                self.network.send(packet)
-                print("Packet Envoyé")
-                self.network.receive()
-                ######################
-
 
                 #################################################################
                 #C'EST ICI QU'ON VA ENVOYER ET RECEVOIR LES DATAS AVEC LES AUTRES

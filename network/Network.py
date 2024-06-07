@@ -91,6 +91,10 @@ class Network:
     def receive_clear(self):
         self.buff_receive = []
 
+    def send(self, msgOut):
+        self.connection.send(msgOut.encode())
+        print (self.PURPLE, "Send : ", msgOut, self.NOCOLOR)
+
     def exit(self):
         """
         Function to exit safely.
@@ -150,14 +154,14 @@ class Network:
         '''
         Répond à une demande d'accès à la propriété d'un objet
         '''
-        if thing.isinstance(Bob) or thing.isinstance(Tile):
+        if thing.isinstance(bob) or thing.isinstance(Tile):
             packet = Packet("AnswerNetworkProperty")
             packet.data_add(thing.network_property)
             packet.serialize()
             self.send(packet)
     
     def verify_owner_property(self,thing,player):
-        if thing.isinstance(Bob) or thing.isinstance(Tile):
+        if thing.isinstance(bob) or thing.isinstance(Tile):
             if thing.owner_property == player:
                 return True
             else:
