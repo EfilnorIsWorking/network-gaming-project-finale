@@ -103,7 +103,11 @@ ConnectionToC = Communication()
 startTime=time.time()
 lastSendTime=time.time()
 
-ConnectionToC.send("BecomeServer")
+#CHOSE HERE !!!!!!!!!!!!!!
+#####################################################################################
+ConnectionToC.send("BecomeServer") #CONNECT AS A SERVER
+#ConnectionToC.send("ConnectTo192.168.43.121!") #CONNECT AS A CLIENT
+#####################################################################################
 
 while time.time()-startTime < 30 : #run for x seconds
     if time.time()-lastSendTime > 5 : #send Bip every x seconds
