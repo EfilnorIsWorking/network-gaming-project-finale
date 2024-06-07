@@ -51,7 +51,8 @@ class Communication:
         print("\n")
         print(BOLD, RED, "Serveur Allumé, sur le port", PORT, NOCOLOR)
         #lancer le processus C sur le port xxxx.
-        os.system(r'./client 7000 > log.txt & ')
+        subprocess.run(['./client 7000 > log.txt & '], shell=True)
+        #os.system(r'./client 7000 > log.txt & ')
         #accepter la connection du processus C
         self.connection, retaddr = self.mysocket.accept()
         self.connection.setblocking(False)
