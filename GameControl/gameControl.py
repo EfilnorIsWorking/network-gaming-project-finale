@@ -263,6 +263,7 @@ class GameControl:
         
 
     def increaseTick(self):
+
         for x in self.grid:
             for tile in x:
                 tile.seen = False
