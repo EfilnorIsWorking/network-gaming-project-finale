@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 from socket import gethostname, gethostbyname #Add
 from random import randint #Add
 
+
 class GameControl:
     instance = None
     #initialisation of grids:
@@ -24,6 +25,7 @@ class GameControl:
         self.listOtherBobs : list['Bob'] = [] #Add
         self.listFoods: set['Tile'] = set()
         self.listOtherFoods : set['Tile'] = set() #Add
+
         self.newBornQueue : list['Bob'] = []
         self.diedQueue: list['Bob'] = []
         self.nbDied : 'int'= 0
@@ -149,6 +151,14 @@ class GameControl:
                 if tile.getEnergy() > 0:
                     foodTiles.append(tile)
         return foodTiles
+    
+    def getOtherTiles(self) -> list['Tile']:
+        otherTiles = []
+        for row in self.getMap():
+            for tile in row:
+                if tile.getEnergy() == 0:
+                    otherTiles.append(tile)
+        return otherTiles
 
     def initiateBobs(self, nbBobs):
         from Tiles.Bob.bob import Bob
@@ -160,7 +170,6 @@ class GameControl:
             bob = Bob()
             bob.spawn(tile)
         # self.pushToList()
-
     #########################################  Fonction ajoutées par florine et celestine Add
     def initiateOtherBobs(self, listOtherBobs): #in the future, will be used for initiating the bobs of other players
         from Tiles.Bob.bob import Bob
@@ -181,6 +190,8 @@ class GameControl:
             del self.listOtherBobs[indexBob] #On enleve le bob de listOtherBobs, attention je crois que Phuc lui laisse les bobs morts dans la liste mais juste les ajoute au mort ou jsp, a verifier
     #########################################################################################"
 
+
+    
     def eatingTest(self):
         from Tiles.Bob.bob import Bob
         x1 = random.randint(0, self.setting.getGridLength() - 1)
@@ -245,6 +256,7 @@ class GameControl:
             # if tile.getEnergy() == FOOD_ENERGY:
             tile.removeFood()
         self.listFoods.clear()
+
     def respawnFood(self):
         # couples: list[tuple] = []
         for _ in range(self.setting.getNbSpawnFood()):
@@ -256,6 +268,16 @@ class GameControl:
             self.getMap()[x][y].spawnFood()
             self.listFoods.add(self.getMap()[x][y])
             # couples.append((x, y))
+    #########################################  Fonction ajoutées par florine et celestine Add
+    def initiateOtherBobs(self, listOtherBobs): #in the future, will be used for initiating the bobs of other players
+        from Tiles.Bob.bob import Bob
+        for otherBob in listOtherBobs:
+            print("Adding other bob")
+            x = otherBob.CurrentTile.gridX
+            y = otherBob.CurrentTile.gridY
+            tile = self.getMap()[x][y]
+            otherBob.isMine = False
+            otherBob.spawnOtherBob(tile)
 
     ####################### Add to show other's foods
     def wipeOtherFood(self): #A faire à chaque tik au lieu de chaque day
@@ -275,6 +297,16 @@ class GameControl:
             self.listOtherFoods.add(self.getMap()[x][y]) #Pas besoin de l'ajouter a la liste
     ########################
 
+            
+    def clearOtherBobs(self, listOtherBobs):
+        from Tiles.Bob.bob import Bob
+        for bob in listOtherBobs:
+            ###to do : il faudra surement ajouter un sécurité pour ne pas qu'on ai un probleme si on tombe sur un bob qui c'est fait mangé
+            bob.CurrentTile.removeBob(bob)
+            indexBob = self.listOtherBobs.index(bob)
+            del self.listOtherBobs[indexBob] #On enleve le bob de listOtherBobs, attention je crois que Phuc lui laisse les bobs morts dans la liste mais juste les ajoute au mort ou jsp, a verifier
+    #########################################################################################"
+
 
     def updateRenderTick(self):
         self.renderTick += 1
@@ -284,6 +316,7 @@ class GameControl:
         
 
     def increaseTick(self):
+
         for x in self.grid:
             for tile in x:
                 tile.seen = False
@@ -291,6 +324,7 @@ class GameControl:
         self.nbBorn = 0
         self.pushToList()
         self.wipeBobs()
+
 
         #Avant de mettre a jour la liste des bob des autres 
         #On nettoie pour pas avoir plusieurs fois les others bobs et la nourriture
@@ -315,12 +349,13 @@ class GameControl:
 
         self.initiateOtherBobs(self.listOtherBobs) #Add, met les bobs dans les cases
         self.respawnOtherFood(dictionaryOtherFoods)
+
         self.listBobs.sort(key=lambda x: x.speed, reverse=True)
         for bob in self.listBobs:
             bob.clearPreviousTiles()
         for bob in self.listBobs:
             if bob not in self.diedQueue:
-                ########################################################################### 
+             ########################################################################### 
                 #Add : Vérification que le bob qui va être bougé appartient bien au joueur
                 #Si on parcours tous les bobs et pas juste les notres, il faudrait mettre ce test avant not in sel.died Queue pour optimiser
                 if bob.ipOwner == gethostbyname(gethostname()):
@@ -345,8 +380,7 @@ class GameControl:
         if self.currentTick == self.setting.getTicksPerDay():
             self.currentTick = 0
             self.increaseDay()
-
-        ##### Add : Ajout pour envoyer ce qu'on a fait aux autres joueurs
+                ##### Add : Ajout pour envoyer ce qu'on a fait aux autres joueurs
         ################# a decommenter quand ça aura été testé :
         #Pour la bouffe
         #dictionaryOtherFoodsToSend = {}
@@ -357,7 +391,6 @@ class GameControl:
         #for tile in self.listFoods:
             #coord = (tile.gridX, tile.gridY)
             #dictionaryMyFoodsToSend[coord] = tile.foodEnergy
-            
         # At the end of the tick, we have listBob, newBornQueue, diedQueue
         
     def increaseDay(self):
