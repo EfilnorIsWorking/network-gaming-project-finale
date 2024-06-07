@@ -55,6 +55,11 @@ def loadFoodImage():
     # food = pg.transform.scale(food, (food.get_width()*0.25, food.get_height()*0.25))
     return food
 
+def loadOtherFoodImage():
+    food = pg.image.load(setting.getImagePath() + "green-apple.png").convert_alpha()
+    # food = pg.transform.scale(food, (food.get_width()*0.25, food.get_height()*0.25))
+    return food
+
 def loadExplosionImage():
     explosion1 = pg.image.load(setting.getImagePath() + "Ex1.png").convert_alpha()
     # explosion1 = pg.transform.scale(explosion1, (explosion1.get_width()*1, explosion1.get_height()*1))

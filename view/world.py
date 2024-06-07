@@ -215,6 +215,7 @@ class World:
 
     def drawFood(self, surface, camera):
         foodTexture = loadFoodImage()
+        otherFoodTexture = loadOtherFoodImage()
         for food in self.gameController.getFoodTiles():
             (x, y) = food.getRenderCoord()
             (X, Y) = (x + self.surface.get_width()/2  , y - ( 50 - self.setting.getTileSize() ) )
@@ -223,8 +224,12 @@ class World:
             if -64 <= (a + camera.scroll.x) <= 1920 and -64 <= (b + camera.scroll.y)  <= 1080:
                 bar_width = int((food.foodEnergy / self.setting.getFoodEnergy()) * 50)
                 pg.draw.rect(surface, (0, 0, 255), (position[0] + 5, position[1] - 5, bar_width, 5))
-                surface.blit(foodTexture, position)
+                if food in self.gameController.listOtherFoods: 
+                    surface.blit(otherFoodTexture, position)
+                else: 
+                    surface.blit(foodTexture, position)
             else: pass
+
 
 ################################################### Simu Mode ###################################################
 
