@@ -95,7 +95,7 @@ class Game:
             # self.draw()
 
             #Ajout pour le réseau
-            packet = Packet("Update","172.30.148.180")
+            packet = Packet("Update","192.168.179.128")
             print("Packet: ", packet.content)
             b1 = Bob()
             packet.data_add(b1)
@@ -103,7 +103,7 @@ class Game:
             packet.serialize()
             self.network.send(packet)
             self.network.send("test string")
-            self.network.receive()
+            #self.network.receive()
             ############################
 
             if self.setting.simuMode:

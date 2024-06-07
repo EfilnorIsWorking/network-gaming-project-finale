@@ -71,9 +71,12 @@ class Network:
             msgIn = self.connection.recv(self.BUFSIZE)
             self.buff_receive.append(msgIn)
             print(self.GREEN, "->> Recv : ", msgIn, self.NOCOLOR)
-            if msgIn.decode() == 'exit':
-                print(self.BOLD, self.RED, "### Exit ###", self.NOCOLOR)
-                self.exit()
+            try:
+                if msgIn.decode() == 'exit':
+                    print(self.BOLD, self.RED, "### Exit ###", self.NOCOLOR)
+                    self.exit()
+            except:
+                pass
             ########################################
             # mettre a jour les données du jeu ici #
             ########################################
