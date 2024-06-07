@@ -185,9 +185,14 @@ void BecomeServer(data_struct * p_data)
 	{
 		stop("socket");
 	}
+	char myIP[20];
+	bzero(myIP,20);
+	getMyIp(myIP);
+	if (strcmp(myIP, "error")==0) //error in getMyIp()
+		strcpy(myIP,LOCAL);
 
 	memset((char *) &(p_data->serv_sockaddr), 0, sizeof(p_data->serv_sockaddr));
-	p_data->serv_sockaddr.sin_addr.s_addr = inet_addr(LOCAL);
+	p_data->serv_sockaddr.sin_addr.s_addr = inet_addr(myIP);
 	p_data->serv_sockaddr.sin_family = AF_INET;
 	p_data->serv_sockaddr.sin_port = htons(C_PORT);
 	
@@ -231,6 +236,47 @@ void reload_thread(data_struct * p_data)
 	printf("thread started\n");
 }
 
+void getMyIp(char * buffer)
+{
+	const char* google_dns_server = "8.8.8.8";
+    int dns_port = 53;
+	
+	struct sockaddr_in serv;
+    
+    int sock = socket ( AF_INET, SOCK_DGRAM, 0);
+    
+    //Socket could not be created
+    if(sock < 0)
+    {
+		perror("Socket error");
+	}
+    
+	memset( &serv, 0, sizeof(serv) );
+    serv.sin_family = AF_INET;
+    serv.sin_addr.s_addr = inet_addr( google_dns_server );
+    serv.sin_port = htons( dns_port );
+
+    int err = connect( sock , (const struct sockaddr*) &serv , sizeof(serv) );
+    
+    struct sockaddr_in name;
+    socklen_t namelen = sizeof(name);
+    err = getsockname(sock, (struct sockaddr*) &name, &namelen);
+
+    const char* p = inet_ntop(AF_INET, &name.sin_addr, buffer, 100);
+    	
+	if(p != NULL)
+	{
+		printf("Local ip is : %s \n" , buffer);
+	}
+	else
+	{
+		//Some error
+		printf ("Error number : %d . Error message : %s \n" , errno , strerror(errno));
+		bzero(buffer, 20);
+		strcpy(buffer, "error");
+	}
+    close(sock);
+}
 
 int main(int argc, char** argv)
 {
