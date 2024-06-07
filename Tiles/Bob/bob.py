@@ -6,15 +6,21 @@ from view.texture import *
 import random
 from socket import gethostname, gethostbyname #Add
 from math import floor
+from socket import gethostname, gethostbyname
 
 class Bob: 
     id = 0
     def __init__(self):
         self.setting = Setting.getSettings()
-        
-        self.id = Bob.id #les bobs ont déjà une id
+
+        #Propriété réseau
+        self.network_property = ""
+        #Propriété métier
+        self.owner_property = gethostbyname(gethostname())
+
+        self.id = Bob.id
         Bob.id += 1
-        
+       
         ##J'ai pas compris ça
         #Propriété réseau
         self.network_property = ""

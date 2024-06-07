@@ -11,5 +11,3 @@ def loadGameByIndex(index: 'int'):
     from GameControl.game import Game
     game = Game.getInstance(screen, clock) 
     game.loadGame(index)
-
-def save
