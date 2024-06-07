@@ -23,6 +23,7 @@ class GameControl:
         self.listBobs : list['Bob'] = []
         self.listOtheBobs : list['Bob'] = [] #Add
         self.listFoods: set['Tile'] = set()
+        self.listOtherFoods : set['Tile'] = set() #Add
         self.newBornQueue : list['Bob'] = []
         self.diedQueue: list['Bob'] = []
         self.nbDied : 'int'= 0
@@ -93,6 +94,7 @@ class GameControl:
         self.listBobs : list['Bob'] = []
         self.listOtherBobs : list['Bob'] = [] #Add
         self.listFoods: set['Tile'] = set()
+        self.listOtherFoods: set['Tile'] = set()
         self.newBornQueue : list['Bob'] = []
         self.diedQueue: list['Bob'] = []
         self.currentTick = 0
@@ -255,6 +257,25 @@ class GameControl:
             self.listFoods.add(self.getMap()[x][y])
             # couples.append((x, y))
 
+    ####################### Add to show other's foods
+    def wipeOtherFood(self): #A faire à chaque tik au lieu de chaque day
+        for tile in self.listOtherFoods:
+            tile.removeFood()
+        self.listOtherFoods.clear()
+    def respawnOtherFood(self, dictionaryOtherFoods):
+        for coord in dictionaryOtherFoods: #On a un dictionnaire coord(x,y) : energie (coord un tuple et energie un float)
+            x = coord[0]
+            y = coord[1]
+            print("x,y :", x,y)
+            print(self.grid[x][y])
+            foodEnergy = dictionaryOtherFoods[coord]
+            self.grid[x][y]
+            self.getMap()[x][y].spawnOtherFood(foodEnergy) #le paramètre doit être un entier
+            #PROBLEME POTENTIEL : la listOtherFoods contient les cases chez l'autre joueur, jsp si ça vas fonctionner comme ça pour l'affichage
+            self.listOtherFoods.add(self.getMap()[x][y]) #Pas besoin de l'ajouter a la liste
+    ########################
+
+
     def updateRenderTick(self):
         self.renderTick += 1
         if self.renderTick == self.setting.getFps():
@@ -263,7 +284,6 @@ class GameControl:
         
 
     def increaseTick(self):
-
         for x in self.grid:
             for tile in x:
                 tile.seen = False
@@ -273,11 +293,13 @@ class GameControl:
         self.wipeBobs()
 
         #Avant de mettre a jour la liste des bob des autres 
-        #On nettoie pour pas avoir plusieurs fois les others bobs
-        if(self.listOtherBobs):
+        #On nettoie pour pas avoir plusieurs fois les others bobs et la nourriture
+        if(self.listOtherBobs): #if a supprimer je pense
             self.clearOtherBobs(self.listOtherBobs)
-        ####################################  RECUPERER ICI LA LISTE DES BOBS TRANSMISE PAR LES AUTRES #####
-
+        self.wipeOtherFood()
+        ####################################  RECUPERER ICI LA LISTE DES BOBS TRANSMISE PAR LES AUTRES ET DES NOURRITURES #####
+        #dictionaryOtherFoods = # ce que les autre les nous envoie
+        ####################################  il faudra aussi gerer le fait que les autres puissent affecter nos propres bobs #
         #dans le but de tester : Add
         from Tiles.Bob.bob import Bob
         from Tiles.tiles import Tile
@@ -287,9 +309,12 @@ class GameControl:
         bob1.CurrentTile = Tile(randint(1,10),3)
         #bob1.CurrentTile.addBob(bob1)
         self.listOtherBobs.append(bob1)
+
+        dictionaryOtherFoods = {(4,5):100, (7,10):30}
         ##############
 
         self.initiateOtherBobs(self.listOtherBobs) #Add, met les bobs dans les cases
+        self.respawnOtherFood(dictionaryOtherFoods)
         self.listBobs.sort(key=lambda x: x.speed, reverse=True)
         for bob in self.listBobs:
             bob.clearPreviousTiles()
