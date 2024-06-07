@@ -21,7 +21,7 @@ class GameControl:
         self.nbBobs: 'int'= 0
         self.nbBobsSpawned = 0
         self.listBobs : list['Bob'] = []
-        self.listOtheBobs : list['Bob'] = [] #Add
+        self.listOtherBobs : list['Bob'] = [] #Add
         self.listFoods: set['Tile'] = set()
         self.listOtherFoods : set['Tile'] = set() #Add
         self.newBornQueue : list['Bob'] = []
