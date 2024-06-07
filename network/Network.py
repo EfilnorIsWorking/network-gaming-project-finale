@@ -92,7 +92,15 @@ class Network:
         self.buff_receive = []
 
     def send(self, msgOut):
-        self.connection.send(msgOut.encode())
+        if isinstance(msgOut,Packet):
+            self.connection.send(msgOut.serialized_data)
+        elif isinstance(msgOut,str):
+            self.connection.send(msgOut.encode())
+        else:
+            try:
+                self.connection.send(msgOut.encode())
+            except:
+                print("Unavailable data type")
         print (self.PURPLE, "Send : ", msgOut, self.NOCOLOR)
 
     def exit(self):

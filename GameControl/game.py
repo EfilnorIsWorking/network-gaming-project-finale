@@ -101,10 +101,9 @@ class Game:
             packet.data_add(b1)
             print("Packet: ", packet.content)
             packet.serialize()
-            # self.network.send(packet)
-            self.network.send("test")
-            print("Packet Envoyé")
-            self.network.receive()
+            self.network.send(packet)
+            self.network.send("test string")
+            # self.network.receive()
             ############################
 
             if self.setting.simuMode:
