@@ -21,7 +21,7 @@ class GameControl:
         self.nbBobs: 'int'= 0
         self.nbBobsSpawned = 0
         self.listBobs : list['Bob'] = []
-        self.listOtheBobs : list['Bob'] = [] #Add
+        self.listOtherBobs : list['Bob'] = [] #Add
         self.listFoods: set['Tile'] = set()
         self.listOtherFoods : set['Tile'] = set() #Add
         self.newBornQueue : list['Bob'] = []
@@ -346,6 +346,18 @@ class GameControl:
             self.currentTick = 0
             self.increaseDay()
 
+        ##### Add : Ajout pour envoyer ce qu'on a fait aux autres joueurs
+        ################# a decommenter quand ça aura été testé :
+        #Pour la bouffe
+        #dictionaryOtherFoodsToSend = {}
+        #dictionaryMyFoodsToSend = {}
+        #for tile in self.listOtherFoods:
+            #coord = (tile.gridX, tile.gridY)
+            #dictionaryOtherFoodsToSend[coord] = tile.foodEnergy
+        #for tile in self.listFoods:
+            #coord = (tile.gridX, tile.gridY)
+            #dictionaryMyFoodsToSend[coord] = tile.foodEnergy
+            
         # At the end of the tick, we have listBob, newBornQueue, diedQueue
         
     def increaseDay(self):
