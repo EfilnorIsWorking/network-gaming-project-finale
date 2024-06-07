@@ -42,7 +42,7 @@ class Tile:
         return (self.gridX, self.gridY)
     def distanceofTile(tile1: 'Tile', tile2:'Tile') -> 'int':
         return abs(tile1.gridX - tile2.gridX) + abs(tile1.gridY - tile2.gridY)
-    def CountofTile(tile: 'Tile', tile2 = 'Tile') -> ('int', 'int'):
+    def CountofTile(tile: 'Tile', tile2 = 'Tile') -> ('int', 'int'): # type: ignore
         return (tile.gridX - tile2.gridX, tile.gridY - tile2.gridY)
     #Texture calling
     def getGrassImage(self):
