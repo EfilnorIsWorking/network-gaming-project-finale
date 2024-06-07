@@ -163,7 +163,7 @@ class GameControl:
     def initiateBobs(self, nbBobs):
         from Tiles.Bob.bob import Bob
         for _ in range(nbBobs):
-            print("Adding bob")
+            #print("Adding bob")
             x = random.randint(0, self.setting.getGridLength() - 1)
             y = random.randint(0, self.setting.getGridLength() - 1)
             tile = self.getMap()[x][y]
@@ -174,7 +174,7 @@ class GameControl:
     def initiateOtherBobs(self, listOtherBobs): #in the future, will be used for initiating the bobs of other players
         from Tiles.Bob.bob import Bob
         for otherBob in listOtherBobs:
-            print("Adding other bob")
+            #print("Adding other bob")
             x = otherBob.CurrentTile.gridX
             y = otherBob.CurrentTile.gridY
             tile = self.getMap()[x][y]
@@ -272,7 +272,7 @@ class GameControl:
     def initiateOtherBobs(self, listOtherBobs): #in the future, will be used for initiating the bobs of other players
         from Tiles.Bob.bob import Bob
         for otherBob in listOtherBobs:
-            print("Adding other bob")
+            #print("Adding other bob")
             x = otherBob.CurrentTile.gridX
             y = otherBob.CurrentTile.gridY
             tile = self.getMap()[x][y]
@@ -288,8 +288,8 @@ class GameControl:
         for coord in dictionaryOtherFoods: #On a un dictionnaire coord(x,y) : energie (coord un tuple et energie un float)
             x = coord[0]
             y = coord[1]
-            print("x,y :", x,y)
-            print(self.grid[x][y])
+            #print("x,y :", x,y)
+            #print(self.grid[x][y])
             foodEnergy = dictionaryOtherFoods[coord]
             self.grid[x][y]
             self.getMap()[x][y].spawnOtherFood(foodEnergy) #le paramètre doit être un entier
