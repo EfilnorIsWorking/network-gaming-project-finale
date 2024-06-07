@@ -103,7 +103,7 @@ class Game:
             packet.serialize()
             self.network.send(packet)
             self.network.send("test string")
-            # self.network.receive()
+            self.network.receive()
             ############################
 
             if self.setting.simuMode:
