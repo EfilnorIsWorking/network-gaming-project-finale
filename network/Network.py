@@ -42,10 +42,25 @@ class Network:
         print(self.BOLD, self.RED, "Serveur Allumé, sur le port", PORT, self.NOCOLOR)
         print(os.getcwd())
         #lancer le processus C sur le port xxxx.
+        program_win = os.path.join(os.path.dirname(__file__), "tcpclient_win.exe")
+        program_unix = os.path.join(os.path.dirname(__file__), "tcpclient_unix")
+
+        # Define the arguments for the executable
+        arguments = ["9000"]
+
+        # Create the command as a list
         
-        subprocess.run(["wsl", "./network/tcpclient", "9000"], shell=True)
-        #os.system(r'./tcpclient 9000 &')
-        #accepter la connection du processus C
+
+        # Use subprocess.Popen to run the command
+        if os.name == 'nt':
+            command = [program_win] + arguments
+            
+        elif os.name == 'posix':
+            command = [program_unix] + arguments
+        else:
+            print('This is not a Windows or Unix-like system.')
+            exit()
+        process = subprocess.Popen(command, shell=True)
         self.connection, retaddr = self.mysocket.accept()
         self.connection.setblocking(False)
         print(self.BOLD, self.RED,"Connecté au programme C local", self.NOCOLOR)
