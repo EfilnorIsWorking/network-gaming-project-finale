@@ -91,7 +91,7 @@ class World:
 
         
         
-        for bob in self.gameController.listBobs:
+        for bob in (self.gameController.listBobs + self.gameController.listOtherBobs): #Add
             if (bob not in self.gameController.diedQueue) and (bob not in self.gameController.newBornQueue):
                 # if(self.gameController.getTick() % 2 == 0 ):
                     nbInteval = len(bob.getPreviousTiles()) - 1
@@ -246,7 +246,7 @@ class World:
         greenLeft = pg.transform.scale(greenLeft, (int(greenLeft.get_width() * self.zoom), int(greenLeft.get_height() * self.zoom)))
         blueLeft = pg.transform.scale(blueLeft, (int(blueLeft.get_width() * self.zoom), int(blueLeft.get_height() * self.zoom)))
         purpleLeft = pg.transform.scale(purpleLeft, (int(purpleLeft.get_width() * self.zoom), int(purpleLeft.get_height() * self.zoom)))
-        for bob in self.gameController.listBobs:
+        for bob in (self.gameController.listBobs + self.gameController.listOtherBobs): #Add 
             (destX, destY) = bob.getCurrentTile().getRenderCoord()
             (desX, desY) = (destX + self.surface.get_width()/2 , destY - ( + 50 - self.setting.getTileSize() ) )
             finish = (desX, desY + self.setting.getTileSize())

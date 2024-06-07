@@ -41,8 +41,13 @@ class Game:
         self.world = World(self.width, self.height)
         self.camera = Camera(self.width, self.height) 
         self.gameController.initiateBobs(self.setting.getNbBob())
+<<<<<<< HEAD
         self.gameController.initiateOtherBobs(self.setting.getNbBob()) #Remplacer le param et mettre une liste de Bob
         
+=======
+        #self.gameController.initiateOtherBobs(self.setting.getNbBob()) ####parametre a changer il devrait y avoir la liste des bobs des autres
+        #################### je sais pas si on doit initialiser le jeu avec ça deja
+
         # self.gameController.eatingTest()
         self.gameController.respawnFood()
     

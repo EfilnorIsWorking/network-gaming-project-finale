@@ -66,6 +66,7 @@ class Tile:
         self.foodEnergy += self.setting.getFoodEnergy()
     def removeBob(self, bob: 'Bob'):
         self.listBob.remove(bob)
+
     
     # // Need a function that return the list of tiles in a certain radius ( get vision tiles )
     def getDirectionTiles(self, orientation: int)-> list['Tile']:

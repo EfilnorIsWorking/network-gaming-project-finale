@@ -61,6 +61,12 @@ class Bob:
         self.PreviousTiles.append(self.CurrentTile)
         self.CurrentTile.addBob(self)
         GameControl.getInstance().addToNewBornQueue(self) 
+#new fonction added Add
+    def spawnOtherBob(self, tile: 'Tile'):
+        self.CurrentTile = tile
+        self.PreviousTile = self.CurrentTile
+        self.PreviousTiles.append(self.CurrentTile)
+        self.CurrentTile.addBob(self)
 
     def die(self):
         self.CurrentTile.removeBob(self)
@@ -166,6 +172,7 @@ class Bob:
 ################### Interact with other bobs ###########################
     def canEat(self, bob: 'Bob') -> bool:
         if(self.ipOwner == bob.ipOwner): #Add : on teste si c'est un copain ou pas
+        #remarque, on aurait aussi pu faire if bob in ListOtherBobs ou qqch comme ça    
             return False
         else:
             return bob.mass * 3 / 2 < self.mass
