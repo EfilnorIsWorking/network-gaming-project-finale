@@ -136,6 +136,8 @@ class GameControl:
         return self.nbMass
     def setNbMass(self, nbMass):
         self.nbMass = nbMass
+    def getListOtherBobs(self):
+        return self.listOtherBobs
     def getListBobs(self):
         return self.listBobs
     def getNbBobsSpawned(self):
@@ -297,16 +299,6 @@ class GameControl:
             self.listOtherFoods.add(self.getMap()[x][y]) #Pas besoin de l'ajouter a la liste
     ########################
 
-            
-    def clearOtherBobs(self, listOtherBobs):
-        from Tiles.Bob.bob import Bob
-        for bob in listOtherBobs:
-            ###to do : il faudra surement ajouter un sécurité pour ne pas qu'on ai un probleme si on tombe sur un bob qui c'est fait mangé
-            bob.CurrentTile.removeBob(bob)
-            indexBob = self.listOtherBobs.index(bob)
-            del self.listOtherBobs[indexBob] #On enleve le bob de listOtherBobs, attention je crois que Phuc lui laisse les bobs morts dans la liste mais juste les ajoute au mort ou jsp, a verifier
-    #########################################################################################"
-
 
     def updateRenderTick(self):
         self.renderTick += 1
@@ -316,6 +308,14 @@ class GameControl:
         
 
     def increaseTick(self):
+        
+        print("Mes bobs")
+        for bob in self.listBobs:
+            print(bob.id)
+
+        print("autresbobs:")
+        for bob in self.listOtherBobs:
+            print( bob.id)
 
         for x in self.grid:
             for tile in x:
@@ -328,8 +328,8 @@ class GameControl:
 
         #Avant de mettre a jour la liste des bob des autres 
         #On nettoie pour pas avoir plusieurs fois les others bobs et la nourriture
-        if(self.listOtherBobs): #if a supprimer je pense
-            self.clearOtherBobs(self.listOtherBobs)
+        #if(self.listOtherBobs): #if a supprimer je pense
+            #self.clearOtherBobs(self.listOtherBobs)
         self.wipeOtherFood()
         ####################################  RECUPERER ICI LA LISTE DES BOBS TRANSMISE PAR LES AUTRES ET DES NOURRITURES #####
         #dictionaryOtherFoods = # ce que les autre les nous envoie
