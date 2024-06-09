@@ -18,12 +18,13 @@ from view.graph import *
 # from GameControl.inputManager import *
 
 from GameControl.serveur import *
-from GameControl.network import Message
+from GameControl.network2 import Message
 import subprocess
-from GameControl.network import DATA_BOB
+from GameControl.network2 import DATA_BOB
 from GameControl.game_message import *
 from Tiles.Bob.bob import *
 from titouan.A.interface import *
+from GameControl.serveur import *
 
 
 
@@ -67,22 +68,25 @@ class Game_online:
         loadFood(saveNumber) 
     
     def waiting_room(self):
+        etqt = EtatJeu.getEtatJeuInstance()
         # comm = Communication()
             
-        ConnectionToC = Communication()
+        # ConnectionToC = Communication()
 
-        # cette partie simule les ticks.
-        startTime=time.time()
-        lastSendTime=time.time()
+        # # cette partie simule les ticks.
+        # startTime=time.time()
+        # lastSendTime=time.time()
 
-        ConnectionToC.send("BecomeServer")
+        # ConnectionToC.send("BecomeServer")
 
-        while time.time()-startTime < 30 : #run for x seconds
-            if time.time()-lastSendTime > 5 : #send Bip every x seconds
-                ConnectionToC.send("Bip from A")
-                lastSendTime=time.time()
-            else : ConnectionToC.recieve() #Listen
-        # socket_l = listen_python()
+        # while time.time()-startTime < 30 : #run for x seconds
+        #     if time.time()-lastSendTime > 5 : #send Bip every x seconds
+        #         ConnectionToC.send("Bip from A")
+        #         lastSendTime=time.time()
+        #     else : ConnectionToC.recieve() #Listen
+        socket_l = SERVEUR()
+        socket_l.listen_python()
+        socket_l.run_c()
         # etat = EtatJeu.getEtatJeuInstance()
         # executable_path="./GameControl/client"
         # if not os.path.exists(executable_path):
@@ -90,17 +94,43 @@ class Game_online:
         #     etat.kill()
         #     return
         # subprocess.Popen(executable_path)
-        # accept_python(socket_l)
-        # mess = Message()
-        # bob_stat = [1,(2,3),25,30,45]
-        # bob_data = DATA_BOB(1, bob_stat, 50, []) 
-        # create_pack = mess.create_mess(PYMSG_BOB_MOVE,bob_data)
-        # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        #     s.connect(('localhost', 8080))
-        #     mess.send_mess(s)
-        #     print("Message envoyé et connexion fermée")
-        #     etat.waiting_room = False
-        #     s.close()
+        socket_l.accept_python()
+        bob_stat = [1,(2,3),25,30,45]
+        bob_data = DATA_BOB(1, bob_stat, 50, []) 
+        mess = Message()
+        mess.create_mess(PYMSG_BOB_MOVE,bob_data)
+        print("Message envoyé et connexion fermée")
+        socket_l.send_mess(mess)
+
+            # etat.waiting_room = False
+            # s.close()
+        while etqt.waiting_room:
+            self.clock.tick(5*self.setting.getFps())
+            self.events()
+            # self.update()
+            # self.draw()
+            # if self.setting.simuMode:
+            #     self.gameController.increaseTick()
+            #     self.drawSimu() 
+            # else:
+            #     self.gameController.updateRenderTick()
+            #     self.draw()
+            # else:
+            #     self.clock.tick(5*self.setting.getFps())
+            #     self.events()
+            #     self.update()
+            #     # self.draw()
+            #     self.gameController.updateRenderTick()
+            #     self.draw()            
+            
+            thing = socket_l.receive_mess()
+            if thing != None:
+                type, port, size, data = thing
+                print("Réponse reçue:", type, port, size, data)
+        if not etqt.playing:
+            return
+            
+        
     
     
 
