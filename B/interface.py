@@ -27,6 +27,7 @@ import errno
 import subprocess
 import pickle
 import struct
+from Tiles.Bob.bob import Bob
 
 #colors and style
 BLACK   = "\033[30m"
@@ -68,11 +69,30 @@ class Network:
             self.data= "S"
             self.data += data
             print(self.data)
+        elif isinstance(data, Bob):
+            self.data = "B"
+            self.data += f"{data.id},{data.age},{data.isHunting},{data.alreadyInteracted},{data.energy},{data.energyMax},{data.mass},{data.velocity},{data.speed},{data.vision}"
+        else:
+            print("self.data est toujours vide")
+            exit()
 
     def decode_data(self):
         if self.data[0]=="S": #message is a str
             return self.data[1:]
-        #else if ...
+        elif self.data[0]=="B":
+            bob_data = self.data[1:].split(',')
+            new_bob = Bob()  # Crée une nouvelle instance de Bob
+            new_bob.id = (bob_data[0])
+            new_bob.age = (bob_data[1])
+            new_bob.isHunting = bob_data[2]
+            new_bob.alreadyInteracted = bob_data[3]
+            new_bob.energy = (bob_data[4])
+            new_bob.energyMax = (bob_data[5])
+            new_bob.mass = (bob_data[6])
+            new_bob.velocity = (bob_data[7])
+            new_bob.speed = (bob_data[8])
+            new_bob.vision = (bob_data[9])
+            return new_bob[1:] #ou new_bob
 
     def recieve(self):    
         try :
@@ -117,7 +137,7 @@ lastSendTime=time.time()
 #CHOSE HERE !!!!!!!!!!!!!!
 #####################################################################################
 #ConnectionToC.send("BecomeServer") #CONNECT AS A SERVER #CONNECT AS A CLIENT
-ConnectionToC.connection.send("ConnectTo192.168.1.40!".encode())
+ConnectionToC.connection.send("ConnectTo192.168.232.128!".encode())
 #####################################################################################
 time.sleep(10)
 ConnectionToC.send("HELLO")
