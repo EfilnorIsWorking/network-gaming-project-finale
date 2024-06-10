@@ -1,0 +1,29 @@
+
+## LOGS ##
+
+
+PY_PORT : 8000
+C_PORT : 9000
+# CONNECTED TO PY LOCAL GAME #
+Thread PlayerToPy started, in main()
+PyToPlayer Loop Start
+PlayerToPy Loop Start
+$$ Recv From Py : ConnectTo192.168.1.40!
+CONNECT TO
+IP to connect : 192.168.1.40
+CONNECT TO SERVER
+connected to : 192.168.1.40
+RELOAD THREAD PlayerToPy
+thread cancelled
+thread started
+END OF ConnectToServer (success)
+$$ Sent to other player in C : ConnectTo192.168.1.40!
+PlayerToPy Loop Start
+$$ Recv From C : B12345,0,False,False,100,200,1,1,1,0
+$$ Recv From C : B12345,0,False,False,100,200,1,1,1,0
+$$ Recv From Py : exit
+EXIT
+Exiting...
+Sockets closed
+
+Exit succesfull
