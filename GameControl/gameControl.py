@@ -47,7 +47,7 @@ class GameControl:
         self.nbVeloce = 0
         self.nbVision = 0
         self.nbEnergy = 0
-        self.network = None
+        self.network = Network(7000)
         self.myTurn = False
         # self.graph = Graph()
 ################################# Graph methods ########################################
@@ -424,16 +424,6 @@ class GameControl:
                 raise Exception("This class is a singleton!")
             GameControl.instance = GameControl()
         return GameControl.instance
-
-    def joinRoom(self,IP):
-        self.network = Network(8000)
-        self.network.connectToServerOnC(IP)
-        print("PLAYER CONNECTED")
-        
-    def createRoom(self):
-        self.network = Network(7000)
-        self.network.openServerOnC()
-        print("PLAYER CONNECTED")
         
 
 

@@ -8,6 +8,7 @@ selected_value_index = None
 from GameControl.setting import Setting
 import GameControl.game as Game
 from GameControl.gameControl import GameControl
+import threading
 from view.world import *
 from view.utils import *
 from Tiles.Bob import *
@@ -20,6 +21,9 @@ from GameControl.valueEvaluator import *
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 PATH = "assets/menu/"
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
 
 ################ Game instance ################
 setting = Setting.getSettings()
@@ -2379,7 +2383,9 @@ def open_network_setting(screen, clock):
                     etat.open_menu = True
                     etat.online_menu = False
                 if create_room_rect.collidepoint(event.pos):
-                    create_room(screen, clock)
+                    thread= threading.Thread(target=gameController.network.openServerOnC)
+                    thread.start()
+                    create_room(screen, clock, thread)
                 if join_room_rect.collidepoint(event.pos):
                     join_room(screen, clock)
 
@@ -2393,7 +2399,7 @@ def open_network_setting(screen, clock):
         pg.display.flip()
     return
 
-def create_room( screen, clock):
+def create_room( screen, clock, thread):
     global selected_value_index, grid_value_rects, input_text, input_active
     input_active = False
     input_text = ""
@@ -2402,7 +2408,7 @@ def create_room( screen, clock):
     back_button_rect = pg.Rect(20, 20, button_width, button_height)
     jeu_button_rect = pg.Rect((1920-button_width)/2, (1080-button_height)/2+350, button_width, button_height)
     background_button_rect = pg.Rect((1920-background_width)/2, (1080-background_height)/2-100, background_width, background_height)
-    ip_text="MON ADRESS IP:" + LOCAL
+    ip_text="WAITING..."
     etat = EtatJeu.getEtatJeuInstance()
     while etat.online_menu:
         for event in pg.event.get():
@@ -2419,27 +2425,61 @@ def create_room( screen, clock):
                     return
         screen.blit(background_image2, (0, 0))
         draw_transparent_button("BACK", back_button_rect, 128)
-        draw_transparent_button("START", jeu_button_rect, 128)
         draw_transparent_button("", background_button_rect, 128)
         drawText(ip_text, BLACK, 1920 // 2, 1080 // 2-200)
-        drawText("CONNECTE",GREEN, 1920 // 2, 1080 // 2)
+        if not thread.is_alive():
+            drawText("CONNECTE",GREEN, 1920 // 2, 1080 // 2)
+            draw_transparent_button("START", jeu_button_rect, 128)
         # drawText("DECONNECTE",RED, 1920 // 2, 1080 // 2-200)
         pg.display.flip()
-                
-def join_room(screen, clock ):
+        
+def join_room(screen, clock):
+   
     global selected_value_index, grid_value_rects, input_text, input_active
     input_active = False
     input_text = ""
+    #input_text2 = "ADRESSE-IP"
+    screen_size = screen.get_size()
     back_button_rect = pg.Rect(20, 20, button_width, button_height)
+    join_button_rect = pg.Rect(screen_size[0]//2-200,600, button_width, button_height)
+    print("la zone de texte s'affiche")
+    input_box = pg.Rect((750,300,300,40))
     etat = EtatJeu.getEtatJeuInstance()
     while etat.online_menu:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                # Si l'utilisateur clique sur la zone de texte
+                if input_box.collidepoint(event.pos):
+                    input_active = True
+                else:
+                    input_active = False
+            if event.type == pg.KEYDOWN:
+                if input_active:
+                    if event.key == pg.K_RETURN:
+                        print(input_text) # Vous pouvez faire autre chose avec le texte ici
+                        input_text = ''
+                    elif event.key == pg.K_BACKSPACE:
+                        input_text = input_text[:-1]
+                        print(input_text)
+                    else:
+                        input_text += event.unicode
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if back_button_rect.collidepoint(event.pos):
                     return
+                elif join_button_rect.collidepoint(event.pos):
+                    print('JOIN')
         screen.blit(background_image2, (0, 0))
+        pg.draw.rect(screen,WHITE,input_box,0)
+        input_surface = font.render(input_text, True,BLACK) # Couleur de la police en noir
+        input_rect = input_surface.get_rect(topleft=(815,305))
+        # input_surface2 = font.render(input_text2, True,BLACK)
+        # input_rect2 = input_surface.get_rect(topright=(800,250))
+        screen.blit(input_surface,input_rect)
+        # screen.blit(input_surface2,input_rect2)
         draw_transparent_button("BACK", back_button_rect, 128)
+        draw_transparent_button("JOIN_ROOM", join_button_rect, 128)
         pg.display.flip()
+        

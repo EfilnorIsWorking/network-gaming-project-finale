@@ -28,18 +28,6 @@ def main():
     print(etat.running)
     while etat.running:
         
-        # # start menu goes here
-        # i = show_menu(screen, clock)
-        # game = Game.getInstance(screen, clock)
-        # if i == 0:
-        #     # print("i = ", i )
-        #     # print("new game")
-        #     game.createNewGame()
-
-        # else:
-        #     game.loadGame(i)
-        #     # game loop here
-        # game.run()
         if etat.open_menu:
             show_menu(screen, clock)
         elif etat.playing:
