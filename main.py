@@ -1,4 +1,3 @@
-
 import pygame as pg
 from GameControl.game import Game
 from GameControl.EventManager import show_menu, EtatJeu, open_network_setting
@@ -8,52 +7,58 @@ from GameControl.setting import Setting
 # from GameControl.gameControl import GameControl
 import sys
 import os
-from socket import gethostname, gethostbyname #Add
+import subprocess  # Add this import
+from socket import gethostname, gethostbyname # Add
 import atexit
 
 flags = HWSURFACE | DOUBLEBUF
 
 def main():
-
     etat = EtatJeu.getEtatJeuInstance()
     pg.init()
     pg.mixer.init()
     # screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
-    screen = pg.display.set_mode((1920,1080), HWSURFACE | DOUBLEBUF)
-    #screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
+    screen = pg.display.set_mode((1920, 1080), HWSURFACE | DOUBLEBUF)
+    # screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
     clock = pg.time.Clock()
     # setting = Setting.getSettings()
     # implement menus
-    
-    # implement game 
+
+    # implement game
 
     print(etat.running)
-    while etat.running:
-        
-        # # start menu goes here
-        # i = show_menu(screen, clock)
-        # game = Game.getInstance(screen, clock)
-        # if i == 0:
-        #     # print("i = ", i )
-        #     # print("new game")
-        #     game.createNewGame()
+    emetteur_process = None  # Initialize process variable
+    recepteur_process = None  # Initialize process variable
 
-        # else:
-        #     game.loadGame(i)
-        #     # game loop here
-        # game.run()
+    while etat.running:
+
         if etat.open_menu:
             show_menu(screen, clock)
         elif etat.playing:
+            # Start the C programs in the background
+            if emetteur_process is None and recepteur_process is None:
+                emetteur_process = subprocess.Popen(["./emetteur"])
+                recepteur_process = subprocess.Popen(["./recepteur"])
+
             game = Game.getInstance(screen, clock)
             if etat.game_instance == 0:
                 game.createNewGame()
-            else: 
+            else:
                 game.loadGame(etat.game_instance)
             game.run()
         elif etat.online_menu:
             open_network_setting(screen, clock)
+
+    # Cleanup: Ensure subprocesses are terminated when the main program exits
     
+
+def cleanup_processes():
+    if main.emetteur_process is not None:
+        main.emetteur_process.terminate()
+        main.emetteur_process.wait()
+    if main.recepteur_process is not None:
+        main.recepteur_process.terminate()
+        main.recepteur_process.wait()
 
 def cleanup_files():
     # 清空文件内容
@@ -68,6 +73,7 @@ def cleanup_files():
 
 # 注册清理函数
 atexit.register(cleanup_files)
+atexit.register(cleanup_processes)
     
     # files_to_delete = ["GameControl/testdata.json", "GameControl/testdata1.json"]
 
