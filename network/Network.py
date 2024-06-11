@@ -15,6 +15,10 @@ from Tiles.tiles import Tile
 class Network:
     def __init__(self,LOCAL = '127.0.0.1',PORT = 9000,BUFSIZE = 1024):
 
+        filename = "client"
+        if not os.path.exists(filename):
+            os.system("gcc -o Network/client Network/client.c")
+        
         self.player_lists=[] #Liste de joueurs 
         self.id = None       #Id de notre client
 
