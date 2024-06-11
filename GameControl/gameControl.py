@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from Tiles.tiles import Tile
 from socket import gethostname, gethostbyname #Add
 from random import randint #Add
+from Network.Network import *
 
 
 class GameControl:
@@ -46,6 +47,8 @@ class GameControl:
         self.nbVeloce = 0
         self.nbVision = 0
         self.nbEnergy = 0
+        self.network = None
+        self.myTurn = False
         # self.graph = Graph()
 ################################# Graph methods ########################################
     def getMasses(self) -> list[float]:
@@ -136,8 +139,6 @@ class GameControl:
         return self.nbMass
     def setNbMass(self, nbMass):
         self.nbMass = nbMass
-    def getListOtherBobs(self):
-        return self.listOtherBobs
     def getListBobs(self):
         return self.listBobs
     def getNbBobsSpawned(self):
@@ -299,24 +300,44 @@ class GameControl:
             self.listOtherFoods.add(self.getMap()[x][y]) #Pas besoin de l'ajouter a la liste
     ########################
 
+            
+    def clearOtherBobs(self, listOtherBobs):
+        from Tiles.Bob.bob import Bob
+        for bob in listOtherBobs:
+            ###to do : il faudra surement ajouter un sécurité pour ne pas qu'on ai un probleme si on tombe sur un bob qui c'est fait mangé
+            bob.CurrentTile.removeBob(bob)
+            indexBob = self.listOtherBobs.index(bob)
+            del self.listOtherBobs[indexBob] #On enleve le bob de listOtherBobs, attention je crois que Phuc lui laisse les bobs morts dans la liste mais juste les ajoute au mort ou jsp, a verifier
+    #########################################################################################"
+
 
     def updateRenderTick(self):
         self.renderTick += 1
         if self.renderTick == self.setting.getFps():
             self.renderTick = 0
             self.increaseTick()
-        
+
+    def receiveAll(self):
+        ####################### RECUPERER LES BOBS DE L'AUTRE JOUEUR #################################
+        #Avant de mettre a jour la liste des bob des autres 
+        #On nettoie pour pas avoir plusieurs fois les others bobs et la nourriture
+        self.clearOtherBobs(self.listOtherBobs)
+        self.wipeOtherFood()
+        lastBobReceived=False
+        while not lastBobReceived:
+            resultat=0
+            resultat=self.network.receive()
+            if isinstance(resultat, str):
+                if resultat=="LAST":
+                    lastBobReceived=True
+            elif isinstance(resultat, Bob):
+                self.listOtherBobs.append(resultat)
+        self.initiateOtherBobs(self.listOtherBobs) #Add, met les bobs dans les cases
+        #self.respawnOtherFood(dictionaryOtherFoods)        
+
 
     def increaseTick(self):
-        
-        print("Mes bobs")
-        for bob in self.listBobs:
-            print(bob.id)
-
-        print("autresbobs:")
-        for bob in self.listOtherBobs:
-            print( bob.id)
-
+        from Tiles.Bob.bob import Bob
         for x in self.grid:
             for tile in x:
                 tile.seen = False
@@ -324,31 +345,8 @@ class GameControl:
         self.nbBorn = 0
         self.pushToList()
         self.wipeBobs()
-
-
-        #Avant de mettre a jour la liste des bob des autres 
-        #On nettoie pour pas avoir plusieurs fois les others bobs et la nourriture
-        #if(self.listOtherBobs): #if a supprimer je pense
-            #self.clearOtherBobs(self.listOtherBobs)
-        self.wipeOtherFood()
-        ####################################  RECUPERER ICI LA LISTE DES BOBS TRANSMISE PAR LES AUTRES ET DES NOURRITURES #####
-        #dictionaryOtherFoods = # ce que les autre les nous envoie
-        ####################################  il faudra aussi gerer le fait que les autres puissent affecter nos propres bobs #
-        #dans le but de tester : Add
-        from Tiles.Bob.bob import Bob
-        from Tiles.tiles import Tile
-
-        bob1 = Bob()
-        bob1.id = 99999999
-        bob1.CurrentTile = Tile(randint(1,10),3)
-        #bob1.CurrentTile.addBob(bob1)
-        self.listOtherBobs.append(bob1)
-
-        dictionaryOtherFoods = {(4,5):100, (7,10):30}
-        ##############
-
-        self.initiateOtherBobs(self.listOtherBobs) #Add, met les bobs dans les cases
-        self.respawnOtherFood(dictionaryOtherFoods)
+        if self.isOnline:
+            self.receiveAll()
 
         self.listBobs.sort(key=lambda x: x.speed, reverse=True)
         for bob in self.listBobs:
@@ -427,7 +425,16 @@ class GameControl:
             GameControl.instance = GameControl()
         return GameControl.instance
 
-    # def update():
+    def joinRoom(self,IP):
+        self.network = Network(8000)
+        self.network.connectToServerOnC(IP)
+        print("PLAYER CONNECTED")
+        
+    def createRoom(self):
+        self.network = Network(7000)
+        self.network.openServerOnC()
+        print("PLAYER CONNECTED")
+        
 
 
 

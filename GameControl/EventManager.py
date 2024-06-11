@@ -2397,7 +2397,12 @@ def create_room( screen, clock):
     global selected_value_index, grid_value_rects, input_text, input_active
     input_active = False
     input_text = ""
+    background_width=1000
+    background_height=600
     back_button_rect = pg.Rect(20, 20, button_width, button_height)
+    jeu_button_rect = pg.Rect((1920-button_width)/2, (1080-button_height)/2+350, button_width, button_height)
+    background_button_rect = pg.Rect((1920-background_width)/2, (1080-background_height)/2-100, background_width, background_height)
+    ip_text="MON ADRESS IP:" + LOCAL
     etat = EtatJeu.getEtatJeuInstance()
     while etat.online_menu:
         for event in pg.event.get():
@@ -2407,9 +2412,20 @@ def create_room( screen, clock):
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if back_button_rect.collidepoint(event.pos):
                     return
+                elif jeu_button_rect.collidepoint(event.pos):
+                    etat.playing = True
+                    print(etat.playing)
+                    etat.game_instance = 0
+                    return
         screen.blit(background_image2, (0, 0))
         draw_transparent_button("BACK", back_button_rect, 128)
+        draw_transparent_button("START", jeu_button_rect, 128)
+        draw_transparent_button("", background_button_rect, 128)
+        drawText(ip_text, BLACK, 1920 // 2, 1080 // 2-200)
+        drawText("CONNECTE",GREEN, 1920 // 2, 1080 // 2)
+        # drawText("DECONNECTE",RED, 1920 // 2, 1080 // 2-200)
         pg.display.flip()
+                
 def join_room(screen, clock ):
     global selected_value_index, grid_value_rects, input_text, input_active
     input_active = False

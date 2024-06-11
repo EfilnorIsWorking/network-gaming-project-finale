@@ -48,7 +48,6 @@ def saveGame( option):
             file.write(f"FOOD {tile.gridX} {tile.gridY} {tile.getEnergy()}\n")
     except TypeError:
         pass
-    
     file.close()
 
 def loadSetting(option):
