@@ -203,8 +203,6 @@ class Game:
 
         # 当连接建立时，将self.server_connected设置为True
         self.server_connected = True
-
-
         while True:
             # 接收文件数据
             time.sleep(1)
@@ -244,19 +242,19 @@ class Game:
         server_running = True  # 控制服务器线程是否运行的标志
 
         # 启动服务器线程
-        server_thread = threading.Thread(target=self.receive_server)
-        server_thread.start()
+        # server_thread = threading.Thread(target=self.receive_server)
+        # server_thread.start()
 
         # client_thread = threading.Thread(target=self.send_client)
         # client_thread.start()
 
         while self.playing:
 
-            if self.server_connected :
-                if not self.client_connected:
-                    client_thread = threading.Thread(target=self.send_client)
-                    client_thread.start()
-                    self.client_connected=True
+            # if self.server_connected :
+            #     if not self.client_connected:
+            #         client_thread = threading.Thread(target=self.send_client)
+            #         client_thread.start()
+            #         self.client_connected=True
 
             self.clock.tick(10)
             if tick_count%10 == 0 and tick_count>=10:
@@ -287,8 +285,8 @@ class Game:
             
 
         # 停止服务器线程
-        server_running = False
-        server_thread.join()  # 等待线程结束后继续
+        # server_running = False
+        # server_thread.join()  # 等待线程结束后继续
 
         
 
