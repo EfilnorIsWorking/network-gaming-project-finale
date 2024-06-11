@@ -35,6 +35,11 @@ class Game:
         self.world = None
         self.camera = None
 
+        self.is_first_gamer = True
+
+        self.server_connected = False
+        self.client_connected = False
+
         # self.gameController.initiateBobs(self.setting.getNbBob())
         # # self.gameController.eatingTest()
         # self.gameController.respawnFood()
@@ -88,10 +93,12 @@ class Game:
     def loadreseaux(self):
         gameController = GameControl.getInstance()
 
-
+        
 
         with open("GameControl/testdata1.json", 'r') as file:
             data = json.load(file)
+            #gameControl.clearOtherBobs(gameControl.listOtherBobs)
+            gameControl.listOtherBobs.clear()
 
             for bob_data in data["bobs"]:
                 bob = Bob()
@@ -180,7 +187,8 @@ class Game:
 
     def receive_server(self):
         receive_filename = 'GameControl/testdata1.json'
-        server_ip = "192.168.43.91"
+        # server_ip = "192.168.43.91"
+        server_ip = "127.0.0.1"
         port = 8080
 
         # 创建一个TCP/IP套接字
@@ -193,9 +201,13 @@ class Game:
         print("等待连接...")
         connection, client_address = server_socket.accept()
 
+        # 当连接建立时，将self.server_connected设置为True
+        self.server_connected = True
+
+
         while True:
             # 接收文件数据
-            time.sleep(5)
+            time.sleep(1)
             with open(receive_filename, 'wb') as f:
                     data = connection.recv(10240)
                     if not data:
@@ -205,9 +217,10 @@ class Game:
             print(f"从客户端接收的文件已保存为：{receive_filename}")
 
     def send_client(self):
-        time.sleep(10)
-        server_ip = "192.168.43.92"
-        port = 8080  # Convert port to an integer
+        # server_ip = "192.168.43.92"
+        # port = 8080
+        server_ip = "127.0.0.1"
+        port = 8090  # Convert port to an integer
         send_filename = "GameControl/testdata.json"
 
         # Create a TCP/IP socket
@@ -220,7 +233,7 @@ class Game:
                 data = f.read()
                 client_socket.sendall(data)
             print(f"文件 {send_filename} 发送完毕。")
-            time.sleep(5)
+            time.sleep(1)
             
 
     def run(self):
@@ -234,12 +247,17 @@ class Game:
         server_thread = threading.Thread(target=self.receive_server)
         server_thread.start()
 
-        # Start the client thread
-        client_thread = threading.Thread(target=self.send_client)
-        client_thread.start()
+        # client_thread = threading.Thread(target=self.send_client)
+        # client_thread.start()
 
         while self.playing:
-                        
+
+            if self.server_connected :
+                if not self.client_connected:
+                    client_thread = threading.Thread(target=self.send_client)
+                    client_thread.start()
+                    self.client_connected=True
+
             self.clock.tick(10)
             if tick_count%10 == 0 and tick_count>=10:
                 try:
@@ -272,10 +290,7 @@ class Game:
         server_running = False
         server_thread.join()  # 等待线程结束后继续
 
-        # 停止服务器线程
-        server_running = False
-        client_thread.join()  # 等待客户端线程结束后继续
-
+        
 
     def events(self):
         etat = EtatJeu.getEtatJeuInstance()
