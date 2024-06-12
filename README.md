@@ -48,5 +48,11 @@ Je me suis occupé de réalisé la partie protocol de Trame dans le réseau. La 
 
 Mes conceptions : 
 Ancienne classe `packet.py`
+
+## Yoann
+J'ai travaillé en étroite collaboration avec Julian dans la partie encodage, décodage, envoi, réception et remplissage de paquet. Après que la première idée fut abandonné dû à son implémentation compliqué nous avons retenté une deuxième fois, mais de façon à ce que les informations se concaténent les unes après les autres pour les récupérer plus facilement.
+De plus, je me suis occupé de tout ce qui est affichage menu 'online', tout ce qui comprend affichage create room et join room.
+
+
 Implémentation pre-rework de la classe `network.py` et notamment adaptation du premier programme `tcp.py` au contexte du jeu.
 Ancienne méthode d'Initialisation du réseau lors du chargement du jeu.
