@@ -55,5 +55,10 @@ Ancienne méthode d'Initialisation du réseau lors du chargement du jeu.
 J'ai travaillé en étroite collaboration avec Julian dans la partie encodage, décodage, envoi, réception et remplissage de paquet. Après que la première idée fut abandonné dû à son implémentation compliqué nous avons retenté une deuxième fois, mais de façon à ce que les informations se concaténent les unes après les autres pour les récupérer plus facilement.
 De plus, je me suis occupé de tout ce qui est affichage menu 'online', tout ce qui comprend affichage create room et join room.
 
+## Delong
+Au début, j'ai réalisé la partie C à C. J'ai conçu un protocole réseau basé sur le partage de la liste IP et le TCP. Chaque joueur avait une partie réseau écrite en C, comprenant un récepteur et un émetteur. Le récepteur était un serveur TCP multithread (un thread pour gérer la liste IP, un thread pour gérer les sockets, un thread permettant de modifier l'intervalle de temps entre les envois), tandis que l'émetteur était un client possédant la liste IP et envoyant des unités de protocole à chaque joueur de la liste (similaire à une diffusion, mais en raison de mes limitations techniques, chaque envoi nécessitait une coupure de la socket).
 
+Le récepteur du premier joueur possédait une liste IP et une fonction de diffusion, et à intervalles réguliers, il envoyait la nouvelle liste IP aux émetteurs des autres joueurs pour s'assurer que les unités de protocole étaient envoyées à tous les joueurs. Tout nouveau joueur devait connecter son émetteur au récepteur du premier joueur pour rejoindre le jeu.
+
+Ensuite, pour aider à tester la logique, j'ai d'abord développé une partie réseau et une lecture interne du jeu entièrement en Python, utilisant des fichiers JSON comme unités de protocole pour réaliser le partage de données. Plus tard, pour éviter les incertitudes, j'ai converti cette partie réseau en C, en utilisant les fichiers JSON comme outil de communication entre le C et le Python.
 
