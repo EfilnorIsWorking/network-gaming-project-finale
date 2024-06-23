@@ -17,7 +17,7 @@ from GameControl.saveAndLoad import *
 from view.graph import *
 # from GameControl.inputManager import *
 
-from GameControl.serveur import *
+from GameControl.hote import *
 from GameControl.network2 import Message
 import subprocess
 from GameControl.network2 import DATA_BOB
@@ -68,7 +68,7 @@ class Game_online:
         loadFood(saveNumber) 
     
     def waiting_room(self):
-        etqt = EtatJeu.getEtatJeuInstance()
+        etat = EtatJeu.getEtatJeuInstance()
         # comm = Communication()
             
         # ConnectionToC = Communication()
@@ -84,7 +84,7 @@ class Game_online:
         #         ConnectionToC.send("Bip from A")
         #         lastSendTime=time.time()
         #     else : ConnectionToC.recieve() #Listen
-        socket_l = SERVEUR()
+        socket_l = HOTE()
         socket_l.listen_python()
         socket_l.run_c()
         # etat = EtatJeu.getEtatJeuInstance()
@@ -97,14 +97,14 @@ class Game_online:
         socket_l.accept_python()
         bob_stat = [1,(2,3),25,30,45]
         bob_data = DATA_BOB(1, bob_stat, 50, []) 
-        mess = Message()
+        mess = UNITE_DE_CONTROLE()
         mess.create_mess(PYMSG_BOB_MOVE,bob_data)
         print("Message envoyé et connexion fermée")
         socket_l.send_mess(mess)
 
             # etat.waiting_room = False
             # s.close()
-        while etqt.waiting_room:
+        while etat.waiting_room:
             self.clock.tick(5*self.setting.getFps())
             self.events()
             # self.update()
@@ -127,7 +127,7 @@ class Game_online:
             if thing != None:
                 type, port, size, data = thing
                 print("Réponse reçue:", type, port, size, data)
-        if not etqt.playing:
+        if not etat.playing:
             return
             
         

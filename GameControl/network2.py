@@ -33,7 +33,7 @@ class DATA_BOB:
     #         return
         
     
-class Message:
+class Unite_de_controle:
     def __init__(self):
         self.type = 0
         self.port = 8080 #random.randint(8000,9000)
